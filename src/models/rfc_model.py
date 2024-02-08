@@ -1,6 +1,7 @@
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier  # Import Random Forest Classifier
 from sklearn.metrics import accuracy_score, classification_report
+# Import the new tuning function
+from hyperparameter_tuning import tune_random_forest
 import pickle
 
 # Load the vectorized features and labels
@@ -13,21 +14,23 @@ with open('../../data/processed/labels.pkl', 'rb') as f:
 # Splitting the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Initialize and train the Random Forest model
-model = RandomForestClassifier(n_estimators=100, random_state=42)  # You can adjust n_estimators and other parameters
-model.fit(X_train, y_train)
+# Call the tuning function to get the best Random Forest model and parameters
+model, best_params = tune_random_forest(X_train, y_train)
 
-# Make predictions on the test set
+print(f"Best Parameters: {best_params}")
+
+# The model is already trained with the best parameters during tuning
+# Make predictions on the test set with the tuned model
 predictions = model.predict(X_test)
 
-# Evaluate the model
+# Evaluate the tuned model
 print("Accuracy:", accuracy_score(y_test, predictions))
 print(classification_report(y_test, predictions))
 
 '''
-# Optionally, save the trained model for later use or deployment
-with open('../../models/random_forest_model.pkl', 'wb') as f:
+# Optionally, save the trained and tuned model for later use or deployment
+with open('../../models/random_forest_tuned_model.pkl', 'wb') as f:
     pickle.dump(model, f)
 '''
 
-print("Random Forest model training and evaluation complete. Model saved.")
+print("Random Forest model training, tuning, and evaluation complete. Model saved.")

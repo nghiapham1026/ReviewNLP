@@ -1,7 +1,7 @@
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report
 import pickle
+from hyperparameter_tuning import tune_logistic_regression
 
 # Load the vectorized features and labels
 with open('../../data/processed/tfidf_features.pkl', 'rb') as f:
@@ -13,14 +13,15 @@ with open('../../data/processed/labels.pkl', 'rb') as f:
 # Splitting the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Initialize and train the logistic regression model
-model = LogisticRegression(max_iter=1000)  # Adjust max_iter if necessary
-model.fit(X_train, y_train)
+# Call the tuning function to get the best model and parameters
+model, best_params = tune_logistic_regression(X_train, y_train)
 
-# Make predictions on the test set
+print(f"Best Parameters: {best_params}")
+
+# Make predictions on the test set with the tuned model
 predictions = model.predict(X_test)
 
-# Evaluate the model
+# Evaluate the tuned model
 print("Accuracy:", accuracy_score(y_test, predictions))
 print(classification_report(y_test, predictions))
 

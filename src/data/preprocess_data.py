@@ -6,6 +6,7 @@ from nltk.stem.porter import PorterStemmer
 from nltk.tokenize import word_tokenize
 import nltk
 from tqdm.auto import tqdm  # Import tqdm for progress bars
+import pickle
 
 # Configure tqdm to work with pandas apply()
 tqdm.pandas()
@@ -41,3 +42,12 @@ X = vectorizer.fit_transform(df['review']).toarray()
 
 # Convert sentiments to binary labels
 y = df['sentiment'].map({'positive': 1, 'negative': 0}).values
+
+df.to_csv('../../data/processed/preprocessed_reviews.csv', index=False)
+
+# Save the vectorized features and labels
+with open('../../data/processed/tfidf_features.pkl', 'wb') as f:
+    pickle.dump(X, f)
+
+with open('../../data/processed/labels.pkl', 'wb') as f:
+    pickle.dump(y, f)

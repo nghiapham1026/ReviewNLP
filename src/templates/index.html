@@ -56,12 +56,12 @@
     <div class="container">
         <h1>Review Sentiment Prediction</h1>
         <form action="/predict" method="post">
-            <textarea name="review" rows="10" cols="50" placeholder="Enter your review here..."></textarea><br>
+            <textarea name="review" rows="10" cols="50" placeholder="Enter your review here..." required minlength="10"></textarea><br>
             <input type="submit" value="Predict Sentiment">
         </form>
         {% if sentiment %}
             <div class="result">
-                <h2>This review is likely {{ sentiment }}</h2>
+                <h2>Review likely to be {{ sentiment }}</h2>
                 <p><strong>Review:</strong> {{ review }}</p>
             </div>
         {% endif %}

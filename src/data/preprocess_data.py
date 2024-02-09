@@ -1,53 +1,49 @@
 import pandas as pd
 import re
-from nltk.corpus import stopwords
+import spacy
 from sklearn.feature_extraction.text import TfidfVectorizer
-from nltk.stem.porter import PorterStemmer
-from nltk.tokenize import word_tokenize
-import nltk
-from tqdm.auto import tqdm  # Import tqdm for progress bars
+from tqdm.auto import tqdm
 import pickle
+
+# Initialize spaCy language model
+nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
 
 # Configure tqdm to work with pandas apply()
 tqdm.pandas()
 
-# Download NLTK stopwords
-nltk.download('punkt')
-nltk.download('stopwords')
-
 # Load the dataset
 df = pd.read_csv('../../data/raw/IMDB_Dataset.csv')
 
-# Function to clean the text
-def clean_text(text):
+# Function to clean and lemmatize the text
+def clean_and_lemmatize(text):
     # Remove HTML tags
     text = re.sub(r'<.*?>', '', text)
-    # Remove punctuation and numbers
+    # Remove punctuation and numbers (keep only letters)
     text = re.sub(r'[^a-zA-Z]', ' ', text)
     # Lowercase all texts
     text = text.lower()
-    # Tokenize
-    tokens = word_tokenize(text)
-    # Remove stopwords and stem
-    ps = PorterStemmer()
-    tokens = [ps.stem(word) for word in tokens if not word in set(stopwords.words('english'))]
-    return ' '.join(tokens)
+    # Lemmatize with spaCy
+    doc = nlp(text)
+    lemmatized = [token.lemma_ for token in doc if not token.is_stop and len(token.text) > 2]
+    return ' '.join(lemmatized)
 
-# Apply the cleaning function to the review column with progress bar
-df['review'] = df['review'].progress_apply(clean_text)
+# Apply the cleaning and lemmatization function to the review column with progress bar
+df['review'] = df['review'].progress_apply(clean_and_lemmatize)
 
-# Vectorization (TF-IDF)
-vectorizer = TfidfVectorizer(max_features=5000)
+# Vectorization (TF-IDF) with updated parameters
+vectorizer = TfidfVectorizer(max_features=5000, min_df=5, max_df=0.7, ngram_range=(1, 2))
 X = vectorizer.fit_transform(df['review']).toarray()
 
 # Convert sentiments to binary labels
 y = df['sentiment'].map({'positive': 1, 'negative': 0}).values
 
+# Save the processed dataframe, vectorized features, and labels
 df.to_csv('../../data/processed/preprocessed_reviews.csv', index=False)
 
-# Save the vectorized features and labels
 with open('../../data/processed/tfidf_features.pkl', 'wb') as f:
     pickle.dump(X, f)
 
 with open('../../data/processed/labels.pkl', 'wb') as f:
     pickle.dump(y, f)
+
+print("Preprocessing complete and files saved.")

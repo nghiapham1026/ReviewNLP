@@ -1,8 +1,9 @@
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
-# Import the new tuning function
-from hyperparameter_tuning import tune_random_forest
 import pickle
+
+# Assuming tune_random_forest is similar to tune_logistic_regression but for RFC
+from hyperparameter_tuning import tune_random_forest
 
 # Load the vectorized features and labels
 with open('../../data/processed/tfidf_features.pkl', 'rb') as f:
@@ -12,7 +13,10 @@ with open('../../data/processed/labels.pkl', 'rb') as f:
     y = pickle.load(f)
 
 # Splitting the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train_full, X_test, y_train_full, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Further split the training data to use only half of it for training
+_, X_train, _, y_train = train_test_split(X_train_full, y_train_full, test_size=0.5, random_state=42)
 
 # Call the tuning function to get the best Random Forest model and parameters
 model, best_params = tune_random_forest(X_train, y_train)

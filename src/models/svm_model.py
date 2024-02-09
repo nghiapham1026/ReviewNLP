@@ -11,7 +11,10 @@ with open('../../data/processed/labels.pkl', 'rb') as f:
     y = pickle.load(f)
 
 # Splitting the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train_full, X_test, y_train_full, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Further split the training data to use only half of it for training
+_, X_train, _, y_train = train_test_split(X_train_full, y_train_full, test_size=0.5, random_state=42)
 
 # Call the tuning function to get the best SVM model and parameters
 model, best_params = tune_svm(X_train, y_train)

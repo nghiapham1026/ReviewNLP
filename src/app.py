@@ -2,20 +2,19 @@ from flask import Flask, request, jsonify
 import pickle
 import re
 import spacy
-from tqdm.auto import tqdm
-
+from utils.data_processing import clean_and_lemmatize
 app = Flask(__name__)
 
 # Initialize spaCy language model
 nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
 
 # Load the trained model
-model_path = './models/logistic_regression_model.pkl'  # Update with your model path
+model_path = '../models/logistic_regression_model.pkl'  # Update with your model path
 with open(model_path, 'rb') as f:
     model = pickle.load(f)
 
 # Load the TF-IDF vectorizer
-vectorizer_path = './data/processed/tfidf_vectorizer.pkl'  # Update with your vectorizer path
+vectorizer_path = '../data/processed/tfidf_vectorizer.pkl'  # Update with your vectorizer path
 with open(vectorizer_path, 'rb') as f:
     vectorizer = pickle.load(f)
 

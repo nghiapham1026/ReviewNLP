@@ -1,6 +1,6 @@
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
-from hyperparameter_tuning import tune_svm  # Make sure to import the correct function
+from src.utils.hyperparameter_tuning import tune_svm  # Make sure to import the correct function
 import pickle
 
 # Load the vectorized features and labels

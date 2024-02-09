@@ -1,2 +1,3 @@
-src/models/__pycache__
+__pycache__
 *.pkl
+*.pyc

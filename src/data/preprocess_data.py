@@ -5,6 +5,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from tqdm.auto import tqdm
 import pickle
 
+import utils.data_processing as utils
+
 # Initialize spaCy language model
 nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
 
@@ -14,21 +16,8 @@ tqdm.pandas()
 # Load the dataset
 df = pd.read_csv('../../data/raw/IMDB_Dataset.csv')
 
-# Function to clean and lemmatize the text
-def clean_and_lemmatize(text):
-    # Remove HTML tags
-    text = re.sub(r'<.*?>', '', text)
-    # Remove punctuation and numbers (keep only letters)
-    text = re.sub(r'[^a-zA-Z]', ' ', text)
-    # Lowercase all texts
-    text = text.lower()
-    # Lemmatize with spaCy
-    doc = nlp(text)
-    lemmatized = [token.lemma_ for token in doc if not token.is_stop and len(token.text) > 2]
-    return ' '.join(lemmatized)
-
 # Apply the cleaning and lemmatization function to the review column with progress bar
-df['review'] = df['review'].progress_apply(clean_and_lemmatize)
+df['review'] = df['review'].progress_apply(utils.clean_and_lemmatize)
 
 # Vectorization (TF-IDF) with updated parameters
 vectorizer = TfidfVectorizer(max_features=5000, min_df=5, max_df=0.7, ngram_range=(1, 2))

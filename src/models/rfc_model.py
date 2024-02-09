@@ -3,7 +3,7 @@ from sklearn.metrics import accuracy_score, classification_report
 import pickle
 
 # Assuming tune_random_forest is similar to tune_logistic_regression but for RFC
-from hyperparameter_tuning import tune_random_forest
+from src.utils.hyperparameter_tuning import tune_random_forest
 
 # Load the vectorized features and labels
 with open('../../data/processed/tfidf_features.pkl', 'rb') as f:

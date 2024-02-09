@@ -1,8 +1,8 @@
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
-from sklearn.feature_extraction.text import TfidfVectorizer
 import pickle
-from hyperparameter_tuning import tune_logistic_regression
+
+from utils.hyperparameter_tuning import tune_logistic_regression
 
 # Load the vectorized features and labels
 with open('../../data/processed/tfidf_features.pkl', 'rb') as f:

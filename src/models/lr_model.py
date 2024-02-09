@@ -1,5 +1,6 @@
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
+from sklearn.feature_extraction.text import TfidfVectorizer
 import pickle
 from hyperparameter_tuning import tune_logistic_regression
 
@@ -25,10 +26,8 @@ predictions = model.predict(X_test)
 print("Accuracy:", accuracy_score(y_test, predictions))
 print(classification_report(y_test, predictions))
 
-"""
 # Optionally, save the trained model for later use or deployment
 with open('../../models/logistic_regression_model.pkl', 'wb') as f:
     pickle.dump(model, f)
-"""
 
 print("Model training and evaluation complete. Model saved.")

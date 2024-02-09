@@ -46,4 +46,7 @@ with open('../../data/processed/tfidf_features.pkl', 'wb') as f:
 with open('../../data/processed/labels.pkl', 'wb') as f:
     pickle.dump(y, f)
 
+with open('../../data/processed/tfidf_vectorizer.pkl', 'wb') as f:
+    pickle.dump(vectorizer, f)
+
 print("Preprocessing complete and files saved.")

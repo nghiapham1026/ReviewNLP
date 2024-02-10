@@ -58,3 +58,4 @@ urllib3==2.2.0
 wasabi==1.1.2
 weasel==0.3.4
 Werkzeug==3.0.1
+gunicorn==20.1.0

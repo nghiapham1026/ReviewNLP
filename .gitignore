@@ -2,3 +2,4 @@ __pycache__
 tfidf_features.pkl
 labels.pkl
 *.pyc
+venv

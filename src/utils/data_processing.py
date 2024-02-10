@@ -15,3 +15,13 @@ def clean_and_lemmatize(text):
     doc = nlp(text)
     lemmatized = [token.lemma_ for token in doc if not token.is_stop and len(token.text) > 2]
     return ' '.join(lemmatized)
+
+def clean_text(text):
+    # Remove HTML tags
+    text = re.sub(r'<.*?>', '', text)
+    # Optionally, remove only non-alphanumeric characters that are not fundamental to understanding (like @, #, etc.)
+    text = re.sub(r'[^\w\s]', '', text)
+    # Lowercase all texts to maintain consistency, although transformers are case-sensitive, it's a good practice
+    text = text.lower()
+    # No lemmatization and stop words removal for transformer models
+    return text

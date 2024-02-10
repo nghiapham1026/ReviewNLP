@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import pickle
 import re
 import spacy
@@ -18,23 +18,9 @@ vectorizer_path = '../data/processed/tfidf_vectorizer.pkl'  # Update with your v
 with open(vectorizer_path, 'rb') as f:
     vectorizer = pickle.load(f)
 
-# Function to clean and lemmatize the text
-def clean_and_lemmatize(text):
-    # Remove HTML tags
-    text = re.sub(r'<.*?>', '', text)
-    # Remove punctuation and numbers (keep only letters)
-    text = re.sub(r'[^a-zA-Z]', ' ', text)
-    # Lowercase all texts
-    text = text.lower()
-    # Lemmatize with spaCy
-    doc = nlp(text)
-    lemmatized = [token.lemma_ for token in doc if not token.is_stop and len(token.text) > 2]
-    return ' '.join(lemmatized)
-
 @app.route('/predict', methods=['POST'])
 def predict():
-    data = request.get_json(force=True)
-    review = data['review']
+    review = request.form['review']
     # Preprocess the review
     processed_review = clean_and_lemmatize(review)
     # Vectorize the preprocessed review
@@ -42,7 +28,11 @@ def predict():
     # Predict sentiment
     prediction = model.predict(vectorized_review)[0]
     sentiment = 'positive' if prediction == 1 else 'negative'
-    return jsonify({'review': review, 'sentiment': sentiment})
+    return render_template('index.html', sentiment=sentiment, review=review)
+
+@app.route('/')
+def home():
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
